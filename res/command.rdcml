@@ -4,8 +4,4 @@ incrementalpurchases {
         help Reloads the configs
         hook reload
     }
-    test {
-        hook test
-        user player
-    }
 }
