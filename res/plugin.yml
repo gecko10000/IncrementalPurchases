@@ -1,0 +1,7 @@
+name: IncrementalPurchases
+main: gecko10000.incrementalpurchases.IncrementalPurchases
+version: 0.1
+api-version: 1.13
+depend:
+  - RedLib
+  - LuckPerms

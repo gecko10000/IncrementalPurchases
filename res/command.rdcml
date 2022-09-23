@@ -1,0 +1,11 @@
+incrementalpurchases {
+    reload {
+        permission ip.reload
+        help Reloads the configs
+        hook reload
+    }
+    test {
+        hook test
+        user player
+    }
+}

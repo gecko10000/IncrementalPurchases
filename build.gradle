@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "src"
+        }
+        resources {
+            srcDir "res"
+        }
+    }
+}
+
+group 'gecko10000'
+version '0.1'
+
+repositories {
+    maven { url "https://repo.papermc.io/repository/maven-public/" }
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compileOnly "io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT"
+    compileOnly "com.github.Redempt:RedLib:6.5.5"
+    compileOnly "net.luckperms:api:5.4"
+}
