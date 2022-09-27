@@ -17,6 +17,7 @@ public class IncrementalPurchase {
     private double startPrice;
     private double multiplier;
     private Operator operator;
+    private int permissionInterval;
 
     private final transient Map<Integer, Double> priceCache = new HashMap<>();
     private transient int cacheCalculated = -1;
@@ -25,10 +26,15 @@ public class IncrementalPurchase {
     private IncrementalPurchase() {}
 
     public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator) {
+        this(key, startPrice, multiplier, operator, 1);
+    }
+
+    public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator, int permissionInterval) {
         this.key = key;
         this.startPrice = startPrice;
         this.multiplier = multiplier;
         this.operator = operator;
+        this.permissionInterval = permissionInterval;
     }
 
     public boolean buy(Player player) {
