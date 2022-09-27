@@ -1,5 +1,7 @@
 package gecko10000.incrementalpurchases;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import redempt.redlib.commandmanager.CommandHook;
@@ -15,6 +17,7 @@ public class CommandHandler {
     @CommandHook("reload")
     public void reload(CommandSender sender) {
         IncrementalPurchases.get().reload();
+        sender.sendMessage(Component.text("Config reloaded!", NamedTextColor.GREEN));
     }
 
 }
