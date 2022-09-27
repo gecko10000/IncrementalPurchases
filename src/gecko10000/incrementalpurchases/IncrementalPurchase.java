@@ -31,6 +31,16 @@ public class IncrementalPurchase {
         this.operator = operator;
     }
 
+    public boolean buy(Player player) {
+        double price = getPrice(player);
+        if (!IncrementalPurchases.get().economy.withdrawPlayer(player, price).transactionSuccess()) {
+            return false;
+        }
+        setStoredPurchases(player, getStoredPurchases(player) + 1);
+        // TODO: permission increment
+        return true;
+    }
+
     public double getPrice(Player player) {
         int alreadyPurchased = getStoredPurchases(player);
         return getPrice(alreadyPurchased);
