@@ -33,7 +33,7 @@ public class IncrementalPurchase {
 
     public boolean buy(Player player) {
         double price = getPrice(player);
-        if (!IncrementalPurchases.get().economy.withdrawPlayer(player, price).transactionSuccess()) {
+        if (!IncrementalPurchases.get().getEconomy().withdrawPlayer(player, price).transactionSuccess()) {
             return false;
         }
         setStoredPurchases(player, getStoredPurchases(player) + 1);

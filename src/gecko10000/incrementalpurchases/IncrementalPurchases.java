@@ -14,7 +14,7 @@ public class IncrementalPurchases extends JavaPlugin {
 
     private static IncrementalPurchases plugin;
     public List<IncrementalPurchase> purchases = new ArrayList<>();
-    public Economy economy;
+    private Economy economy;
 
     public void onEnable() {
         plugin = this;
@@ -30,6 +30,10 @@ public class IncrementalPurchases extends JavaPlugin {
             throw new RuntimeException("Economy plugin not found.");
         }
         economy = rsp.getProvider();
+    }
+
+    public Economy getEconomy() {
+        return economy;
     }
 
     public void reload() {
