@@ -6,14 +6,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.config.ConfigManager;
 import redempt.redlib.config.annotations.ConfigMappable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @ConfigMappable
 public class IncrementalPurchases extends JavaPlugin {
 
     private static IncrementalPurchases plugin;
-    public List<IncrementalPurchase> purchases = new ArrayList<>();
     private Economy economy;
 
     public void onEnable() {
@@ -21,7 +17,6 @@ public class IncrementalPurchases extends JavaPlugin {
         setupEconomy();
         reload();
         new CommandHandler();
-        purchases.add(new IncrementalPurchase("test", 3, 1.01, Operator.MULTIPLY));
     }
 
     public void setupEconomy() {
@@ -38,7 +33,7 @@ public class IncrementalPurchases extends JavaPlugin {
 
     public void reload() {
         ConfigManager.create(this)
-                .target(this).saveDefaults().load();
+                .target(Config.class).saveDefaults().load();
     }
 
     public static IncrementalPurchases get() {

@@ -1,7 +1,9 @@
 package gecko10000.incrementalpurchases;
 
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.persistence.PersistentDataType;
 import redempt.redlib.config.annotations.ConfigMappable;
 import redempt.redlib.config.annotations.ConfigPath;
@@ -17,6 +19,7 @@ public class IncrementalPurchase {
     private double startPrice;
     private double multiplier;
     private Operator operator;
+    private String permissionPrefix;
     private int permissionInterval;
 
     private final transient Map<Integer, Double> priceCache = new HashMap<>();
@@ -25,15 +28,16 @@ public class IncrementalPurchase {
     // for config manager
     private IncrementalPurchase() {}
 
-    public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator) {
-        this(key, startPrice, multiplier, operator, 1);
+    public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator, String permissionPrefix) {
+        this(key, startPrice, multiplier, operator, permissionPrefix, 1);
     }
 
-    public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator, int permissionInterval) {
+    public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator, String permissionPrefix, int permissionInterval) {
         this.key = key;
         this.startPrice = startPrice;
         this.multiplier = multiplier;
         this.operator = operator;
+        this.permissionPrefix = permissionPrefix;
         this.permissionInterval = permissionInterval;
     }
 
@@ -43,8 +47,47 @@ public class IncrementalPurchase {
             return false;
         }
         setStoredPurchases(player, getStoredPurchases(player) + 1);
-        // TODO: permission increment
+        incrementPermission(player);
         return true;
+    }
+
+    private void incrementPermission(Player player) {
+        Integer highestExisting = getHighestPermission(player);
+        if (highestExisting != null) {
+            runCommand(player, Config.unsetCommand, highestExisting);
+        } else {
+            // convert to 0 now, we don't need to know that it wasn't set
+            highestExisting = 0;
+        }
+        runCommand(player, Config.setCommand, highestExisting + permissionInterval);
+    }
+
+    private void runCommand(Player player, String command, int amount) {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(),
+                command.replaceAll("<player>", player.getName())
+                        .replaceAll("<permission>", permissionPrefix + amount));
+    }
+
+    private Integer getHighestPermission(Player player) {
+        Integer highest = null;
+        for (PermissionAttachmentInfo attachmentInfo : player.getEffectivePermissions()) {
+            if (!attachmentInfo.getValue()) continue;
+            String permission = attachmentInfo.getPermission();
+            if (!permission.startsWith(permissionPrefix)) continue;
+            String supposedAmount = permission.substring(permissionPrefix.length());
+            Integer amount = tryParseInt(supposedAmount);
+            if (amount == null) continue;
+            highest = Math.max(highest == null ? 0 : highest, amount);
+        }
+        return highest;
+    }
+
+    private Integer tryParseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     public double getPrice(Player player) {
