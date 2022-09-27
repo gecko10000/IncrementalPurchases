@@ -33,6 +33,10 @@ public class IncrementalPurchase {
 
     public double getPrice(Player player) {
         int alreadyPurchased = getStoredPurchases(player);
+        return getPrice(alreadyPurchased);
+    }
+
+    private double getPrice(int alreadyPurchased) {
         if (cacheCalculated >= alreadyPurchased) return priceCache.get(alreadyPurchased);
         return cache(alreadyPurchased);
     }
