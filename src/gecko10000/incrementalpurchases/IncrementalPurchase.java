@@ -20,6 +20,7 @@ public class IncrementalPurchase {
     private double multiplier;
     private Operator operator;
     private String permissionPrefix;
+    private int maxPermission = Integer.MAX_VALUE;
     private int permissionInterval;
 
     private final transient Map<Integer, Double> priceCache = new HashMap<>();
@@ -28,32 +29,44 @@ public class IncrementalPurchase {
     // for config manager
     private IncrementalPurchase() {}
 
-    public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator, String permissionPrefix) {
-        this(key, startPrice, multiplier, operator, permissionPrefix, 1);
+    public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator, String permissionPrefix, int max) {
+        this(key, startPrice, multiplier, operator, permissionPrefix, max, 1);
     }
 
-    public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator, String permissionPrefix, int permissionInterval) {
+    public IncrementalPurchase(String key, double startPrice, double multiplier, Operator operator, String permissionPrefix, int max, int permissionInterval) {
         this.key = key;
         this.startPrice = startPrice;
         this.multiplier = multiplier;
         this.operator = operator;
         this.permissionPrefix = permissionPrefix;
+        this.maxPermission = max;
         this.permissionInterval = permissionInterval;
     }
 
-    public boolean buy(Player player) {
+    enum Response {
+        SUCCESS,
+        NOT_ENOUGH_MONEY,
+        MAX,
+    }
+
+    public Response buy(Player player) {
+        Integer current = getHighestPermission(player);
+        if (current >= maxPermission) {
+            return Response.MAX;
+        }
         double price = getPrice(player);
         if (!IncrementalPurchases.get().getEconomy().withdrawPlayer(player, price).transactionSuccess()) {
-            return false;
+            return Response.NOT_ENOUGH_MONEY;
         }
         setStoredPurchases(player, getStoredPurchases(player) + 1);
         incrementPermission(player);
-        return true;
+        return Response.SUCCESS;
     }
 
     private void incrementPermission(Player player) {
         Integer highestExisting = getHighestPermission(player);
-        runCommand(player, Config.setCommand, (highestExisting == null ? 0 : highestExisting) + permissionInterval);
+        int newValue = Math.min(maxPermission, (highestExisting == null ? 0 : highestExisting) + permissionInterval);
+        runCommand(player, Config.setCommand, newValue);
         if (highestExisting != null) {
             runCommand(player, Config.unsetCommand, highestExisting);
         }
@@ -65,7 +78,7 @@ public class IncrementalPurchase {
                         .replaceAll("<permission>", permissionPrefix + amount));
     }
 
-    private Integer getHighestPermission(Player player) {
+    public Integer getHighestPermission(Player player) {
         Integer highest = null;
         for (PermissionAttachmentInfo attachmentInfo : player.getEffectivePermissions()) {
             if (!attachmentInfo.getValue()) continue;
@@ -109,6 +122,10 @@ public class IncrementalPurchase {
         }
         cacheCalculated = purchases;
         return price;
+    }
+
+    public void resetStoredPurchases(Player player) {
+        setStoredPurchases(player, 0);
     }
 
     private int getStoredPurchases(Player player) {

@@ -1,7 +1,17 @@
 incrementalpurchases {
     reload {
-        permission ip.reload
+        permission ip.admin.reload
         help Reloads the configs
         hook reload
+    }
+    buy player:target?(context self) incrementalpurchase:purchase -silent,-s {
+        permission ip.admin.buy
+        help Buy an incremental purchase
+        hook buy
+    }
+    reset player:target?(context self) incrementalpurchase:purchase {
+        permission ip.admin.reset
+        help Resets the number of stored purchases for a player
+        hook reset
     }
 }
