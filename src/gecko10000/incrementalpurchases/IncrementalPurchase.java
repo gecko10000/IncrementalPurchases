@@ -46,11 +46,13 @@ public class IncrementalPurchase {
     enum Response {
         SUCCESS,
         NOT_ENOUGH_MONEY,
-        MAX,
+        MAX;
+
+        int newValue;
     }
 
     public Response buy(Player player) {
-        Integer current = getHighestPermission(player);
+        int current = getHighestPermission(player);
         if (current >= maxPermission) {
             return Response.MAX;
         }
@@ -59,22 +61,24 @@ public class IncrementalPurchase {
             return Response.NOT_ENOUGH_MONEY;
         }
         setStoredPurchases(player, getStoredPurchases(player) + 1);
-        incrementPermission(player);
+        Response r = Response.SUCCESS;
+        r.newValue = incrementPermission(player);
         return Response.SUCCESS;
     }
 
-    private void incrementPermission(Player player) {
-        Integer highestExisting = getHighestPermission(player);
+    private int incrementPermission(Player player) {
+        int highestExisting = getHighestPermission(player);
         int newValue = getNextPermission(player);
         runCommand(player, Config.setCommand, newValue);
-        if (highestExisting != null) {
+        if (highestExisting != 0) {
             runCommand(player, Config.unsetCommand, highestExisting);
         }
+        return newValue;
     }
 
     public int getNextPermission(Player player) {
-        Integer highestExisting = getHighestPermission(player);
-        return Math.min(maxPermission, (highestExisting == null ? 0 : highestExisting) + permissionInterval);
+        int highestExisting = getHighestPermission(player);
+        return Math.min(maxPermission, highestExisting + permissionInterval);
     }
 
     private void runCommand(Player player, String command, int amount) {
@@ -83,8 +87,8 @@ public class IncrementalPurchase {
                         .replaceAll("<permission>", permissionPrefix + amount));
     }
 
-    public Integer getHighestPermission(Player player) {
-        Integer highest = null;
+    public int getHighestPermission(Player player) {
+        int highest = 0;
         for (PermissionAttachmentInfo attachmentInfo : player.getEffectivePermissions()) {
             if (!attachmentInfo.getValue()) continue;
             String permission = attachmentInfo.getPermission();
@@ -92,7 +96,7 @@ public class IncrementalPurchase {
             String supposedAmount = permission.substring(permissionPrefix.length());
             Integer amount = tryParseInt(supposedAmount);
             if (amount == null) continue;
-            highest = Math.max(highest == null ? 0 : highest, amount);
+            highest = Math.max(highest, amount);
         }
         return highest;
     }

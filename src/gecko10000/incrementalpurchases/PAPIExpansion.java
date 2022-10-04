@@ -45,8 +45,8 @@ public class PAPIExpansion extends PlaceholderExpansion {
             return price + "";
         }
         if (params.endsWith(currentPermission)) {
-            Integer highest = get(player, params.substring(0, params.length() - currentPermission.length()), i -> i.getHighestPermission(player));
-            return String.valueOf(highest == null ? 0 : highest);
+            int highest = get(player, params.substring(0, params.length() - currentPermission.length()), i -> i.getHighestPermission(player));
+            return String.valueOf(highest);
         }
         if (params.endsWith(nextPermission)) {
             return "" + get(player, params.substring(0, params.length() - nextPermission.length()), i -> i.getNextPermission(player));

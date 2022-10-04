@@ -38,6 +38,8 @@ public class IncrementalPurchases extends JavaPlugin {
     public void reload() {
         ConfigManager.create(this)
                 .target(Config.class).saveDefaults().load();
+        ConfigManager.create(this, "lang.yml")
+                .target(Lang.class).saveDefaults().load();
     }
 
     public static IncrementalPurchases get() {
