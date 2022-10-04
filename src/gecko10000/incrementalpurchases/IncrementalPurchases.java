@@ -1,6 +1,7 @@
 package gecko10000.incrementalpurchases;
 
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import redempt.redlib.config.ConfigManager;
@@ -17,6 +18,9 @@ public class IncrementalPurchases extends JavaPlugin {
         setupEconomy();
         reload();
         new CommandHandler();
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new PAPIExpansion().register();
+        }
     }
 
     public void setupEconomy() {

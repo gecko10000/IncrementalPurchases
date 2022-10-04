@@ -65,11 +65,16 @@ public class IncrementalPurchase {
 
     private void incrementPermission(Player player) {
         Integer highestExisting = getHighestPermission(player);
-        int newValue = Math.min(maxPermission, (highestExisting == null ? 0 : highestExisting) + permissionInterval);
+        int newValue = getNextPermission(player);
         runCommand(player, Config.setCommand, newValue);
         if (highestExisting != null) {
             runCommand(player, Config.unsetCommand, highestExisting);
         }
+    }
+
+    public int getNextPermission(Player player) {
+        Integer highestExisting = getHighestPermission(player);
+        return Math.min(maxPermission, (highestExisting == null ? 0 : highestExisting) + permissionInterval);
     }
 
     private void runCommand(Player player, String command, int amount) {
