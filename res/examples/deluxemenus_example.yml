@@ -1,0 +1,32 @@
+menu_title: '&b&lExample Purchases'
+size: 27
+items:
+  example:
+    material: STONE
+    slot: 0
+    display_name: "&a&lExample"
+    lore:
+      - "&3This is an example!"
+      - "&6%ip_example_current_permission% &e▶ &6%ip_example_next_permission% &8| &2$%ip_example_price%"
+      - "&cMax: &420"
+    left_click_commands:
+      - "[console] incrementalpurchases buy %player_name% example"
+      - "[refresh]<delay=1>"
+    priority: 2
+  example_maxed:
+    material: STONE
+    enchantments:
+      - durability;1
+    hide_enchantments: true
+    slot: 0
+    display_name: "&a&lExample"
+    lore:
+      - "&3This is an example!"
+      - "&aMaxed at &220&a!"
+    view_requirement:
+      requirements:
+        maxed:
+          type: has permission
+          permission: example.amount.20
+    left_click_commands:
+      - "[console] incrementalpurchases buy %player_name% example"
