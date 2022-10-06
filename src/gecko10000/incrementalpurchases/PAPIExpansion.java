@@ -36,6 +36,7 @@ public class PAPIExpansion extends PlaceholderExpansion {
         final String priceCleanString = "_price_clean";
         final String currentPermission = "_current_permission";
         final String nextPermission = "_next_permission";
+        final String max = "_max";
         if (params.endsWith(priceString)) {
             Double price = get(player, params.substring(0, params.length() - priceString.length()), i -> i.getPrice(player));
             return price == null ? null : Utils.formatMoney(price);
@@ -50,6 +51,9 @@ public class PAPIExpansion extends PlaceholderExpansion {
         }
         if (params.endsWith(nextPermission)) {
             return "" + get(player, params.substring(0, params.length() - nextPermission.length()), i -> i.getNextPermission(player));
+        }
+        if (params.endsWith(max)) {
+            return "" + get(player, params.substring(0, params.length() - max.length()), IncrementalPurchase::getMaxPermission);
         }
         return null;
     }

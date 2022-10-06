@@ -101,6 +101,10 @@ public class IncrementalPurchase {
         return highest;
     }
 
+    public int getMaxPermission() {
+        return maxPermission;
+    }
+
     private Integer tryParseInt(String s) {
         try {
             return Integer.parseInt(s);
