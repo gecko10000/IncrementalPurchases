@@ -7,6 +7,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.persistence.PersistentDataType;
 import redempt.redlib.config.annotations.ConfigMappable;
 import redempt.redlib.config.annotations.ConfigPath;
+import redempt.redlib.config.annotations.ConfigPostInit;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +42,13 @@ public class IncrementalPurchase {
         this.permissionPrefix = permissionPrefix;
         this.maxPermission = max;
         this.permissionInterval = permissionInterval;
+        postInit();
+    }
+
+    @ConfigPostInit
+    private void postInit() {
+        cacheCalculated = 0;
+        priceCache.put(0, startPrice);
     }
 
     enum Response {
