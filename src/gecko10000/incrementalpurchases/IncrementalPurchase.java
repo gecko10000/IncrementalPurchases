@@ -21,7 +21,7 @@ public class IncrementalPurchase {
     private double multiplier;
     private Operator operator;
     private String permissionPrefix;
-    private int maxPermission = Integer.MAX_VALUE;
+    private int maxPurchases = Integer.MAX_VALUE;
     private int permissionInterval;
 
     private final transient Map<Integer, Double> priceCache = new HashMap<>();
@@ -40,7 +40,7 @@ public class IncrementalPurchase {
         this.multiplier = multiplier;
         this.operator = operator;
         this.permissionPrefix = permissionPrefix;
-        this.maxPermission = max;
+        this.maxPurchases = max;
         this.permissionInterval = permissionInterval;
         postInit();
     }
@@ -60,17 +60,17 @@ public class IncrementalPurchase {
     }
 
     public Response buy(Player player) {
-        int current = getHighestPermission(player);
-        if (current >= maxPermission) {
+        int current = getStoredPurchases(player);
+        if (current >= maxPurchases) {
             return Response.MAX;
         }
         double price = getPrice(player);
         if (!IncrementalPurchases.get().getEconomy().withdrawPlayer(player, price).transactionSuccess()) {
             return Response.NOT_ENOUGH_MONEY;
         }
-        setStoredPurchases(player, getStoredPurchases(player) + 1);
         Response r = Response.SUCCESS;
         r.newValue = incrementPermission(player);
+        setStoredPurchases(player, getStoredPurchases(player) + 1);
         return Response.SUCCESS;
     }
 
@@ -86,7 +86,7 @@ public class IncrementalPurchase {
 
     public int getNextPermission(Player player) {
         int highestExisting = getHighestPermission(player);
-        return Math.min(maxPermission, highestExisting + permissionInterval);
+        return highestExisting + (getStoredPurchases(player) >= maxPurchases ? 0 : permissionInterval);
     }
 
     private void runCommand(Player player, String command, int amount) {
@@ -109,8 +109,8 @@ public class IncrementalPurchase {
         return highest;
     }
 
-    public int getMaxPermission() {
-        return maxPermission;
+    public int getMaxPurchases() {
+        return maxPurchases;
     }
 
     private Integer tryParseInt(String s) {

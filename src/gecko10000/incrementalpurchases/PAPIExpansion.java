@@ -39,30 +39,30 @@ public class PAPIExpansion extends PlaceholderExpansion {
         final String max = "_max";
         final String purchased = "_purchased";
         if (params.endsWith(priceString)) {
-            Double price = get(player, params.substring(0, params.length() - priceString.length()), i -> i.getPrice(player));
+            Double price = get(params.substring(0, params.length() - priceString.length()), i -> i.getPrice(player));
             return price == null ? null : Utils.formatMoney(price);
         }
         if (params.endsWith(priceCleanString)) {
-            Double price = get(player, params.substring(0, params.length() - priceCleanString.length()), i -> i.getPrice(player));
+            Double price = get(params.substring(0, params.length() - priceCleanString.length()), i -> i.getPrice(player));
             return price + "";
         }
         if (params.endsWith(currentPermission)) {
-            int highest = get(player, params.substring(0, params.length() - currentPermission.length()), i -> i.getHighestPermission(player));
+            int highest = get(params.substring(0, params.length() - currentPermission.length()), i -> i.getHighestPermission(player));
             return String.valueOf(highest);
         }
         if (params.endsWith(nextPermission)) {
-            return "" + get(player, params.substring(0, params.length() - nextPermission.length()), i -> i.getNextPermission(player));
+            return "" + get(params.substring(0, params.length() - nextPermission.length()), i -> i.getNextPermission(player));
         }
         if (params.endsWith(max)) {
-            return "" + get(player, params.substring(0, params.length() - max.length()), IncrementalPurchase::getMaxPermission);
+            return "" + get(params.substring(0, params.length() - max.length()), IncrementalPurchase::getMaxPurchases);
         }
         if (params.endsWith(purchased)) {
-            return "" + get(player, params.substring(0, params.length() - purchased.length()), i -> i.getStoredPurchases(player));
+            return "" + get(params.substring(0, params.length() - purchased.length()), i -> i.getStoredPurchases(player));
         }
         return null;
     }
 
-    private <T> T get(Player player, String purchaseName, Function<IncrementalPurchase, T> function) {
+    private <T> T get(String purchaseName, Function<IncrementalPurchase, T> function) {
         return Optional.ofNullable(Config.purchases.get(purchaseName)).map(function).orElse(null);
     }
 
