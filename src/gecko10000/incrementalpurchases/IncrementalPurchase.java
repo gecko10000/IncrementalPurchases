@@ -149,7 +149,7 @@ public class IncrementalPurchase {
         setStoredPurchases(player, 0);
     }
 
-    private int getStoredPurchases(Player player) {
+    public int getStoredPurchases(Player player) {
         return player.getPersistentDataContainer().getOrDefault(new NamespacedKey(IncrementalPurchases.get(), key), PersistentDataType.INTEGER, 0);
     }
 
