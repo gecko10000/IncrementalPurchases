@@ -100,7 +100,7 @@ public class IncrementalPurchase {
         for (PermissionAttachmentInfo attachmentInfo : player.getEffectivePermissions()) {
             if (!attachmentInfo.getValue()) continue;
             String permission = attachmentInfo.getPermission();
-            if (!permission.startsWith(permissionPrefix)) continue;
+            if (!permission.toLowerCase().startsWith(permissionPrefix.toLowerCase())) continue;
             String supposedAmount = permission.substring(permissionPrefix.length());
             Integer amount = tryParseInt(supposedAmount);
             if (amount == null) continue;
