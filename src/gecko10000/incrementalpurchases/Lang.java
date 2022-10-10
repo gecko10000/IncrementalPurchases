@@ -7,4 +7,5 @@ public class Lang {
     public static String permissionMaxed = "<red>This permission is already maxed!";
     public static String configsReloaded = "<green>Configs reloaded!";
     public static String resetPurchases = "<green>Stored purchases reset for <player>.";
+    public static String incrementedPurchase = "<green>Incremented purchase for <player> by <amount>.";
 }

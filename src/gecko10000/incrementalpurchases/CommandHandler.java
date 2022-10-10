@@ -45,4 +45,10 @@ public class CommandHandler {
         sender.sendMessage(miniMessage.deserialize(Lang.resetPurchases, Placeholder.unparsed("player", target.getName())));
     }
 
+    @CommandHook("increment")
+    public void increment(CommandSender sender, Player target, IncrementalPurchase purchase, int amount) {
+        purchase.incrementPermission(target, amount);
+        sender.sendMessage(miniMessage.deserialize(Lang.incrementedPurchase, Placeholder.unparsed("player", target.getName()), Placeholder.unparsed("amount", "" + amount)));
+    }
+
 }

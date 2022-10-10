@@ -14,4 +14,9 @@ incrementalpurchases {
         help Resets the number of stored purchases for a player
         hook reset
     }
+    increment player:target?(context self) incrementalpurchase:purchase int:amount?(1) {
+        permission ip.admin.increment
+        help Increments a permission value for a player
+        hook increment
+    }
 }
